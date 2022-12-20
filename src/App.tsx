@@ -1,8 +1,8 @@
 // ./src/App.tsx
 
-import React, { useState } from 'react';
-import Path from 'path';
-import uploadFileToBlob, { isStorageConfigured } from './azure-storage-blob';
+import React, { useState } from "react";
+import Path from "path";
+import uploadFileToBlob, { isStorageConfigured } from "./azure-storage-blob";
 
 const storageConfigured = isStorageConfigured();
 
@@ -38,15 +38,41 @@ const App = (): JSX.Element => {
     setInputKey(Math.random().toString(36));
   };
 
+  const onListItems = () => {
+    if (blobList.length > 0){
+      return <h1>There are no files in storage</h1>
+    } else {
+      blobList.map((item) => {
+          return (
+            <li key={item}>
+              <div>
+                {Path.basename(item)}
+                {console.log(Path.basename(item))}
+                <br />
+                {Path.basename(item).split(".").pop() !== "jpg" ? (
+                  <video  width="750" height="500" controls>
+                    <source src={item} type='video/mp4'/>
+                  </video>
+                ) : (
+                  <img src={item} alt={item} height="200" />
+                )}
+              </div>
+            </li>
+          );
+        })
+    }
+  }
+
   // display form
   const DisplayForm = () => (
     <div>
-      <input type="file" onChange={onFileChange} key={inputKey || ''} />
+      <input type="file" onChange={onFileChange} key={inputKey || ""} />
       <button type="submit" onClick={onFileUpload}>
         Upload!
-          </button>
+      </button>
+      <button type="submit" onClick={()=>onListItems()}>List Items</button>
     </div>
-  )
+  );
 
   // display file name and image
   const DisplayImagesFromContainer = () => (
@@ -59,7 +85,13 @@ const App = (): JSX.Element => {
               <div>
                 {Path.basename(item)}
                 <br />
-                <img src={item} alt={item} height="200" />
+                {Path.basename(item).split(".").pop() !== "jpg" ? (
+                  <video  width="750" height="500" controls>
+                    <source src={item} type='video/mp4'/>
+                  </video>
+                ) : (
+                  <img src={item} alt={item} height="200" />
+                )}
               </div>
             </li>
           );
@@ -81,5 +113,3 @@ const App = (): JSX.Element => {
 };
 
 export default App;
-
-
